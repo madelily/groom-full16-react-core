@@ -26,7 +26,7 @@ Next.js 프레임워크, TypeScript 리팩토링, Docker 배포까지
 ---
 
 ## 📁 프로젝트 구조
-
+~~~
 groom-full16-react-core/
 ├─ 01-async-await/ # 비동기 처리 (Async / Await)
 ├─ 02-useEffect/ # 컴포넌트 라이프사이클 이해
@@ -38,7 +38,7 @@ groom-full16-react-core/
 ├─ 08-dynamic-routing/ # Next.js 동적 라우팅
 ├─ 09-docker/ # Docker를 활용한 배포
 └─ README.md
-
+~~~
 
 ---
 
