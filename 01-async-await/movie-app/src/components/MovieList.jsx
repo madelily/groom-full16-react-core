@@ -1,41 +1,55 @@
 import { useEffect, useState } from "react";
+import ErrorMessage from "./ErrorMessage";
 
 function MovieList() {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log("MovieList 마운트됨");
-
         const fetchMovies = async () => {
-            setLoading(true);
+            try {
+                setLoading(true);
+                setError(null);
 
-            const response = await fetch(
-                "https://www.omdbapi.com/?apikey=8c9d4c40&s=batman"
-            );
-            const data = await response.json();
+                const response = await fetch(
+                    "https://www.omdbapi.com/?apikey=8c9d4c40&s=batman"
+                );
 
-            setMovies(data.Search);
-            setLoading(false);
+                if (!response.ok) {
+                    throw new Error("네트워크 오류");
+                }
+
+                const data = await response.json();
+
+                if (data.Response === "False") {
+                    throw new Error(data.Error);
+                }
+
+                setMovies(data.Search);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchMovies();
-
-        return () => {
-            console.log("MovieList 언마운트됨");
-        };
     }, []);
 
     if (loading) return <p>로딩 중...</p>;
 
     return (
-        <ul>
-            {movies.map((movie) => (
-                <li key={movie.imdbID}>
-                    {movie.Title} ({movie.Year})
-                </li>
-            ))}
-        </ul>
+        <>
+            <ErrorMessage message={error} />
+            <ul>
+                {movies.map((movie) => (
+                    <li key={movie.imdbID}>
+                        {movie.Title} ({movie.Year})
+                    </li>
+                ))}
+            </ul>
+        </>
     );
 }
 
