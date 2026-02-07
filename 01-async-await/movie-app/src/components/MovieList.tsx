@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { Movie } from "../types/movie";
 import ErrorMessage from "./ErrorMessage";
 
 function MovieList() {
-    const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [movies, setMovies] = useState<Movie[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -15,20 +16,15 @@ function MovieList() {
                 const response = await fetch(
                     "https://www.omdbapi.com/?apikey=8c9d4c40&s=batman"
                 );
-
-                if (!response.ok) {
-                    throw new Error("네트워크 오류");
-                }
-
                 const data = await response.json();
 
                 if (data.Response === "False") {
                     throw new Error(data.Error);
                 }
 
-                setMovies(data.Search);
+                setMovies(data.Search as Movie[]);
             } catch (err) {
-                setError(err.message);
+                setError((err as Error).message);
             } finally {
                 setLoading(false);
             }
